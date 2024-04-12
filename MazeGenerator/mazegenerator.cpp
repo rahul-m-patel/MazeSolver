@@ -4,10 +4,10 @@
 #include <random>
 using namespace std;
 
-vector<int> get_exit_coords(int &size, std::mt19937 &rng){
+vector<int> get_exit_coords(int &size, mt19937 &rng){
     vector<int> coords(2);
-    std::uniform_int_distribution<int> random_coord(0, size - 1);
-    std::uniform_int_distribution<int> random_axes(0, 1);
+    uniform_int_distribution<int> random_coord(0, size - 1);
+    uniform_int_distribution<int> random_axes(0, 1);
     int randomNum = random_coord(rng);
     while (randomNum % 2 == 0)
         randomNum = random_coord(rng);
@@ -26,16 +26,17 @@ vector<int> get_exit_coords(int &size, std::mt19937 &rng){
 enum SYMBOLS{
     EMPTY = ' ',
     WALL = '#',
-    START = 'x',
-    SOL = '*',
-    PARTICLE = 'o'
+    START = 'S',
+    SOL = 'o',
+    PARTICLE = '*',
+    EXIT = 'E'
 };
 
 void structurize_maze(vector<vector<char> > &maze, int &size, vector<int> &exit_coords){
     for(int i=0;i<size;++i){
         for(int j=0;j<size;++j){
             if(i==exit_coords[0] && j==exit_coords[1]){
-                maze[i][j] = EMPTY;
+                maze[i][j] = EXIT;
                 continue;
             }
             if(i%2==0 || j%2==0){
@@ -108,9 +109,9 @@ void remove_wall_if_needed(vector<vector<char> > &maze, vector<int> &curr_cell, 
     }
 }
 
-void dfs(vector<vector<char> > &maze, int &size, vector<vector<bool> > &visited, vector<int> &curr_coords, vector<vector<int> > &curr_track, bool is_exit, bool &debug, std::mt19937 &rng);
+void dfs(vector<vector<char> > &maze, int &size, vector<vector<bool> > &visited, vector<int> &curr_coords, vector<vector<int> > &curr_track, bool is_exit, bool &debug,  mt19937 &rng);
 
-void backtrack(vector<vector<char> > &maze, int &size, vector<vector<bool> > &visited, vector<int> &curr_coords, vector<vector<int> > &curr_track, bool &debug, std::mt19937 &rng){
+void backtrack(vector<vector<char> > &maze, int &size, vector<vector<bool> > &visited, vector<int> &curr_coords, vector<vector<int> > &curr_track, bool &debug, mt19937 &rng){
     int curr_size = curr_track.size();
     for(int i=curr_size-1;i>0;i--){
         curr_coords = curr_track[i];
@@ -123,12 +124,12 @@ void backtrack(vector<vector<char> > &maze, int &size, vector<vector<bool> > &vi
     }
 }
 
-void dfs(vector<vector<char> > &maze, int &size, vector<vector<bool> > &visited, vector<int> &curr_coords, vector<vector<int> > &curr_track, bool is_exit, bool &debug, std::mt19937 &rng){
+void dfs(vector<vector<char> > &maze, int &size, vector<vector<bool> > &visited, vector<int> &curr_coords, vector<vector<int> > &curr_track, bool is_exit, bool &debug, mt19937 &rng){
     vector<vector<int> > neighbors = get_neighbors(maze,size,visited,curr_coords,is_exit);
     while(neighbors.size()>0){
         //printf("Inside while loop of dfs...\n");
         int no_of_cells = neighbors.size();
-        std::uniform_int_distribution<int> uniform_cells(0, no_of_cells - 1);
+        uniform_int_distribution<int> uniform_cells(0, no_of_cells - 1);
         int new_cell_index = uniform_cells(rng);
         vector<int> new_cell = neighbors[new_cell_index];
         neighbors.clear();
@@ -146,11 +147,11 @@ void dfs(vector<vector<char> > &maze, int &size, vector<vector<bool> > &visited,
     backtrack(maze,size,visited,curr_coords,curr_track,debug,rng);
 }
 
-void mazegenerator(int &size, bool debug){
+void mazegenerator(vector<vector<char> > &maze, int &size, bool debug){
     printf("Generating Maze of size %d ...\n",size);
-    vector<vector<char> > maze(size, vector<char> (size));
-    std::random_device rd;  // Obtain a random seed from the operating system
-    std::mt19937 rng(rd());
+    //vector<vector<char> > maze(size, vector<char> (size));
+    random_device rd;  // Obtain a random seed from the operating system
+    mt19937 rng(rd());
     vector<int> exit_coords = get_exit_coords(size,rng);
     if(debug){
         printf("Exit co-ordinates are %d, %d\n",exit_coords[0],exit_coords[1]);
@@ -166,6 +167,7 @@ void mazegenerator(int &size, bool debug){
     curr_track.push_back(exit_coords);
     visited[exit_coords[0]][exit_coords[1]] = true;
     dfs(maze,size,visited,exit_coords,curr_track,true,debug,rng);
+    maze[0][1] = START;
     if(debug){
         printf("Printing final maze...\n");
         print_maze(maze,size);

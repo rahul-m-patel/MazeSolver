@@ -1,6 +1,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include "./MazeGenerator/mazegenerator.cpp"
+#include "./MazeSolver/sequential.cpp"
 using namespace std;
 
 int main(int argc, char *argv[]){
@@ -13,5 +14,7 @@ int main(int argc, char *argv[]){
         size++;
         printf("To maintain symmetry, maze size is generally always odd. Creating maze of size %d\n",size);
     }
-    mazegenerator(size,true);
+    vector<vector<char> > maze(size, vector<char> (size));
+    mazegenerator(maze,size,false);
+    sequential(maze,size,true);
 }
