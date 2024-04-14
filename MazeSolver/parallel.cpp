@@ -54,7 +54,7 @@ void parallel(vector<vector<char>> &maze, int size, int debug){
 
     if (parallelDFS(maze, size, 0, 1, visited, path)) { // Assuming the start is at (0, 1)
         for (auto& p : path) {
-            if (maze[p.first][p.second] == ' ') // Don't overwrite the end point
+            if (maze[p.first][p.second] == ' ')
                 maze[p.first][p.second] = SOL;
         }
     }
