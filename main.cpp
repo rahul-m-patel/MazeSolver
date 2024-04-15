@@ -1,8 +1,8 @@
 #include <iostream>
 #include <stdlib.h>
 #include "./MazeGenerator/mazegenerator.cpp"
-#include "./MazeSolver/sequential.cpp"
-#include "./MazeSolver/parallel.cpp"
+#include "./MazeSolver/DFS/sequential.cpp"
+#include "./MazeSolver/DFS/parallel.cpp"
 using namespace std;
 
 int main(int argc, char *argv[]){
