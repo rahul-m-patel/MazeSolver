@@ -4,6 +4,7 @@
 #include <random>
 using namespace std;
 
+//gets random exit co-ordinates on right most column or the bottom most row 
 vector<int> get_exit_coords(int &size, mt19937 &rng){
     vector<int> coords(2);
     uniform_int_distribution<int> random_coord(0, size - 1);
@@ -28,10 +29,11 @@ enum SYMBOLS{
     WALL = '#',
     START = 'S',
     SOL = 'o',
-    PARTICLE = '*',
     EXIT = 'E'
 };
 
+
+// setting initial structure and boundaries of maze
 void structurize_maze(vector<vector<char> > &maze, int &size, vector<int> &exit_coords){
     for(int i=0;i<size;++i){
         for(int j=0;j<size;++j){
@@ -49,6 +51,7 @@ void structurize_maze(vector<vector<char> > &maze, int &size, vector<int> &exit_
     }
 }
 
+// prints maze
 void print_maze(vector<vector<char> > &maze, int &size){
     for(int i=0;i<size;++i){
         for(int j=0;j<size;++j){
@@ -59,14 +62,13 @@ void print_maze(vector<vector<char> > &maze, int &size){
     printf("\n");
 }
 
+// gets neighbors of current cell where we can move
 vector<vector<int> > get_neighbors(vector<vector<char> > &maze, int &size, vector<vector<bool> > &visited, vector<int> &curr_coords, bool is_exit){
     vector<vector<int> > neighbors;
     int offset = is_exit? 1:2;
-    //printf("Inside getneighbors...\n");
     for(int i=0;i<4;++i){
         int index = curr_coords[(i>=2)] + ((i%2)?offset:-offset);
         int j = (i<2)?1:0;
-        //printf("Index %d\n",index);
         if(index>=0 && index<size){
             if(i<2){
                 if(!visited[index][curr_coords[j]] && maze[index][curr_coords[j]]!=WALL){
@@ -89,6 +91,7 @@ vector<vector<int> > get_neighbors(vector<vector<char> > &maze, int &size, vecto
     return neighbors;
 }
 
+// making maze by removing walls from initial structure
 void remove_wall_if_needed(vector<vector<char> > &maze, vector<int> &curr_cell, vector<int> &new_cell, bool &debug){
     int row_to_del = -1, col_to_del = -1;
     if(new_cell[1] == curr_cell[1]) {
@@ -111,6 +114,7 @@ void remove_wall_if_needed(vector<vector<char> > &maze, vector<int> &curr_cell, 
 
 void dfs(vector<vector<char> > &maze, int &size, vector<vector<bool> > &visited, vector<int> &curr_coords, vector<vector<int> > &curr_track, bool is_exit, bool &debug,  mt19937 &rng);
 
+// backtracking to see if there are any possible walls that can be removed
 void backtrack(vector<vector<char> > &maze, int &size, vector<vector<bool> > &visited, vector<int> &curr_coords, vector<vector<int> > &curr_track, bool &debug, mt19937 &rng){
     int curr_size = curr_track.size();
     for(int i=curr_size-1;i>0;i--){
@@ -124,10 +128,11 @@ void backtrack(vector<vector<char> > &maze, int &size, vector<vector<bool> > &vi
     }
 }
 
+
+// maze generator code
 void dfs(vector<vector<char> > &maze, int &size, vector<vector<bool> > &visited, vector<int> &curr_coords, vector<vector<int> > &curr_track, bool is_exit, bool &debug, mt19937 &rng){
     vector<vector<int> > neighbors = get_neighbors(maze,size,visited,curr_coords,is_exit);
     while(neighbors.size()>0){
-        //printf("Inside while loop of dfs...\n");
         int no_of_cells = neighbors.size();
         uniform_int_distribution<int> uniform_cells(0, no_of_cells - 1);
         int new_cell_index = uniform_cells(rng);
@@ -149,7 +154,6 @@ void dfs(vector<vector<char> > &maze, int &size, vector<vector<bool> > &visited,
 
 void mazegenerator(vector<vector<char> > &maze, int &size, bool debug){
     printf("Generating Maze of size %d ...\n",size);
-    //vector<vector<char> > maze(size, vector<char> (size));
     random_device rd;  // Obtain a random seed from the operating system
     mt19937 rng(rd());
     vector<int> exit_coords = get_exit_coords(size,rng);
@@ -157,11 +161,7 @@ void mazegenerator(vector<vector<char> > &maze, int &size, bool debug){
         printf("Exit co-ordinates are %d, %d\n",exit_coords[0],exit_coords[1]);
     }
     structurize_maze(maze,size,exit_coords);
-    // if(debug){
-    //     printf("Printing initial structure...\n");
-    //     print_maze(maze,size);
-    //     printf("\n");
-    // }
+
     vector<vector<bool> > visited(size, vector<bool> (size,false));
     vector<vector<int> > curr_track;
     curr_track.push_back(exit_coords);

@@ -19,6 +19,7 @@ struct p_Particles{
     vector<char> moving_direction;
     p_Particles(int n_particles) : n_particles(n_particles), position(vector<pair<int,int>>(n_particles)), path(vector<vector<pair<int,int>>>(n_particles)), moving_direction(vector<char> (n_particles,'F')) {}
 
+    // add particle to a partcular cell
     void addParticle(int index, int x, int y){
         this->position[index] = {x,y};
         this->path[index].push_back({x,y});
@@ -45,6 +46,7 @@ struct p_Particles{
     }
 };
 
+// get next set of possible moves from current cell
 vector<char> p_get_possible_moves(vector<vector<char>> &maze, int &size, pair<int,int> pos){
     vector<char> moves;
     int x = pos.first;
@@ -60,12 +62,15 @@ vector<char> p_get_possible_moves(vector<vector<char>> &maze, int &size, pair<in
     return moves;
 }
 
+
+// get direction
 char p_get_next_move(pair<int,int> &curr, int &new_x, int &new_y){
     int x = curr.first;
     int y = curr.second;
     return x==new_x?(new_y>y?'E':'W'):(new_x>x?'S':'N');
 }
 
+// backtrack remaining particles
 void p_backtrack_remaining_particles(vector<vector<char>> &maze, int &size, int &startRow, int &startCol, p_Particles &particles, vector<pair<int,int> > &exited_particle_path, int &exited_particle){
     int n_particles = particles.n_particles;
     vector<bool> particles_on_track(n_particles,false);
@@ -158,10 +163,6 @@ void p_solve_maze(vector<vector<char>> &maze, int &size, int &startRow, int &sta
     }
     maze[startRow][startCol] = START;
     printf("Exit reached by particle %d.\n",exited_particle);
-
-    //p_backtrack_remaining_particles(maze,size,startRow,startCol,particles,exited_particle_path,exited_particle);
-
-    //printf("All particles have exited.\n");
 }
 
 void n_particles_parallel(vector<vector<char>> &maze, int &size, int &n_particles, int debug){

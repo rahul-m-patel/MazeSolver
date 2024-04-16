@@ -23,6 +23,7 @@ int main(int argc, char *argv[]){
 
     // Generate the maze
     vector<vector<char>> maze(size, vector<char>(size));
+    //pass the maze, size and debug flag
     mazegenerator(maze, size, false);
 
     vector<vector<char>> mazeForSequential = maze;
@@ -33,12 +34,12 @@ int main(int argc, char *argv[]){
     start = omp_get_wtime();  
     n_particles_sequential(mazeForSequential, size, particles, false);
     end = omp_get_wtime();
-    printf("Execution time for sequential code with %d particles is %f\n",particles,end-start);
+    printf("Execution time for sequential code with %d particles is %f seconds\n",particles,end-start);
 
     start = omp_get_wtime();  
     n_particles_parallel(mazeForParallel,size,particles,false);
     end = omp_get_wtime();
-    printf("Execution time for parallel code with %d particles is %f\n",particles,end-start);
+    printf("Execution time for parallel code with %d particles is %f seconds\n",particles,end-start);
 
     return 0;
 }

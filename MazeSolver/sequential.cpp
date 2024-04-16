@@ -15,17 +15,6 @@ enum MOVES {
     L,
 };
 
-// // Function to display the maze
-// void print_maze(vector<vector<char>> &maze, int &size){
-//     for(int i=0;i<size;++i){
-//         for(int j=0;j<size;++j){
-//             printf("%c ",maze[i][j]);
-//         }
-//         printf("\n");
-//     }
-//     printf("\n");
-// }
-
 // Structure to manage particle information
 struct Particles{
     int n_particles;
@@ -244,12 +233,6 @@ coord.first][coord.second] = 'o';
     }
 
     printf("Exit reached by particle %d\n",exited_particle_index);
-    //cout << "Starting to backtrack the remaining particles" << endl;
-
-    //backtrack_exited_particle(maze, maze_copy, initial_position, size, particles, exited_particle_path, exited_particle_index, debug);
-
-
-    //cout << "All particles have reached the exit!" << endl;
 
     return maze;
 }
@@ -268,21 +251,3 @@ vector<vector<char>> n_particles_sequential(vector<vector<char>> &maze, int &siz
 
     return navigate_maze_randomly(maze, size, initial_position, particles, debug);
 }
-
-
-// int main() {
-//     int size = 5;
-//     vector<vector<char>> maze = {
-//         {'#', ' ', ' ', '#', ' '},
-//         {'#', '#', ' ', '#', ' '},
-//         {' ', ' ', ' ', ' ', ' '},
-//         {' ', '#', '#', '#', ' '},
-//         {' ', ' ', ' ', 'E', '#'}
-//     };
-
-//     int debug = 0;
-//     int particles = 10;
-//     n_particles_sequential(maze, size, particles, debug);
-
-//     return 0;
-// }
