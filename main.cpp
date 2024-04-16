@@ -3,6 +3,7 @@
 #include "./MazeGenerator/mazegenerator.cpp"
 #include "./MazeSolver/DFS/sequential.cpp"
 #include "./MazeSolver/DFS/parallel.cpp"
+#include "./MazeSolver/n_particles/parallel.cpp"
 using namespace std;
 
 int main(int argc, char *argv[]){
@@ -25,20 +26,22 @@ int main(int argc, char *argv[]){
     mazegenerator(maze, size, true);
 
     // Check if the execution type is provided
-    char execution = (argc > 2) ? argv[2][0] : '\0';
+    // char execution = (argc > 2) ? argv[2][0] : '\0';
 
-    // Execute based on the provided type or default to both
-    if (execution == 's') {
-        sequential(maze, size, true);
-    } else if (execution == 'p') {
-        parallel(maze, size, true);
-    } else {
-        // No valid execution type provided, execute both by default
-        vector<vector<char>> mazeForSequential = maze;
-        vector<vector<char>> mazeForParallel = maze;
-        sequential(mazeForSequential, size, true);
-        parallel(mazeForParallel, size, true);
-    }
+    // // Execute based on the provided type or default to both
+    // if (execution == 's') {
+    //     sequential(maze, size, true);
+    // } else if (execution == 'p') {
+    //     parallel(maze, size, true);
+    // } else {
+    //     // No valid execution type provided, execute both by default
+    //     vector<vector<char>> mazeForSequential = maze;
+    //     vector<vector<char>> mazeForParallel = maze;
+    //     sequential(mazeForSequential, size, true);
+    //     parallel(mazeForParallel, size, true);
+    // }
+    int particles = 100;
+    n_particles_parallel(maze,size,particles,true);
     
     return 0;
 }
