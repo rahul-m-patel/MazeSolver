@@ -6,13 +6,18 @@
 using namespace std;
 
 vector<char> news = {'N','S','W','E'};
+vector<pair<int, int> > directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
 
-struct Particles{
+bool isValid(int &row, int &col, int &size){
+    return row>=0 && row<size && col>=0 && col<size;
+}
+
+struct p_Particles{
     int n_particles;
     vector<pair<int,int>> position;
     vector<vector<pair<int,int>>> path;
     vector<char> moving_direction;
-    Particles(int n_particles) : n_particles(n_particles), position(vector<pair<int,int>>(n_particles)), path(vector<vector<pair<int,int>>>(n_particles)), moving_direction(vector<char> (n_particles,'F')) {}
+    p_Particles(int n_particles) : n_particles(n_particles), position(vector<pair<int,int>>(n_particles)), path(vector<vector<pair<int,int>>>(n_particles)), moving_direction(vector<char> (n_particles,'F')) {}
 
     void addParticle(int index, int x, int y){
         this->position[index] = {x,y};
@@ -61,7 +66,7 @@ char p_get_next_move(pair<int,int> &curr, int &new_x, int &new_y){
     return x==new_x?(new_y>y?'E':'W'):(new_x>x?'S':'N');
 }
 
-void p_backtrack_remaining_particles(vector<vector<char>> &maze, int &size, int &startRow, int &startCol, Particles &particles, vector<pair<int,int> > &exited_particle_path, int &exited_particle){
+void p_backtrack_remaining_particles(vector<vector<char>> &maze, int &size, int &startRow, int &startCol, p_Particles &particles, vector<pair<int,int> > &exited_particle_path, int &exited_particle){
     int n_particles = particles.n_particles;
     vector<bool> particles_on_track(n_particles,false);
     vector<bool> exited_particles(n_particles,false);
@@ -110,7 +115,7 @@ void p_backtrack_remaining_particles(vector<vector<char>> &maze, int &size, int 
     }
 }
 
-void p_solve_maze(vector<vector<char>> &maze, int &size, int &startRow, int &startCol, Particles &particles, mt19937 &rng){
+void p_solve_maze(vector<vector<char>> &maze, int &size, int &startRow, int &startCol, p_Particles &particles, mt19937 &rng){
     bool maze_solved = false;
     int exited_particle = -1;
 
@@ -152,18 +157,19 @@ void p_solve_maze(vector<vector<char>> &maze, int &size, int &startRow, int &sta
         maze[it.first][it.second] = SOL;
     }
     maze[startRow][startCol] = START;
-    printf("Exit reached by particle %d.\nBacktracking remaining particles...\n",exited_particle);
+    printf("Exit reached by particle %d.\n",exited_particle);
 
-    p_backtrack_remaining_particles(maze,size,startRow,startCol,particles,exited_particle_path,exited_particle);
+    //p_backtrack_remaining_particles(maze,size,startRow,startCol,particles,exited_particle_path,exited_particle);
 
-    printf("All particles have exited.\n");
+    //printf("All particles have exited.\n");
 }
 
 void n_particles_parallel(vector<vector<char>> &maze, int &size, int &n_particles, int debug){
-    Particles particles(n_particles);
+    p_Particles particles(n_particles);
     int startRow = 0, startCol = 1;
     random_device rd;  // Obtain a random seed from the operating system
     mt19937 rng(rd());
+
     #pragma omp parallel for
     for(int i=0;i<n_particles;++i){
         particles.addParticle(i,startRow,startCol);

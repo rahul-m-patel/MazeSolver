@@ -54,8 +54,10 @@ pair<int,int> get_updated_coordinates(MOVES new_move, pair<int,int> position) {
             return make_pair(position.first, position.second - 1);
         case MOVES::N:
             cout << "Unexpected error: the N move is meant only for particle initialization!" << endl;
-            exit(1);
+            return {-1,-1};
+        
     }
+    return {-1,-1};
 }
 
 // Determines available moves from a given position within the maze
@@ -93,7 +95,7 @@ MOVES determine_move_from_position(pair<int,int> &position, pair<int,int> &next_
 }
 
 // Retraces steps for particles that exited to find the successful path
-void backtrack_exited_particle(vector<vector<char>> &maze, vector<vector<char>> &maze_copy, pair<int,int> &initial_position, int &size, Particles &particles, vector<pair<int,int>>& exited_particle_path, int exited_particle_index, int debug) {
+void backtrack_exited_particle(vector<vector<char>> &maze, vector<vector<char>> &maze_copy, pair<int,int> &initial_position, int &size, Particles &particles, vector<pair<int,int>>& exited_particle_path, int exited_particle_index, bool debug) {
     int n_particles = particles.n_particles;
     int n_particles_copy = n_particles;
     vector<bool> particles_on_track_map;
@@ -173,7 +175,7 @@ void backtrack_exited_particle(vector<vector<char>> &maze, vector<vector<char>> 
 }
 
 // Randomly moves particles to find an exit, displaying debug info if enabled
-vector<vector<char>> navigate_maze_randomly(vector<vector<char>> &maze, int &size, pair<int,int> initial_position, Particles &particles, int debug) {
+vector<vector<char>> navigate_maze_randomly(vector<vector<char>> &maze, int &size, pair<int,int> initial_position, Particles &particles, bool debug) {
     bool exit_reached = false;
     int exited_particle_index = -1;
     vector<vector<char>> maze_copy;
@@ -237,22 +239,24 @@ coord.first][coord.second] = 'o';
     }
     maze[initial_position.first][initial_position.second] = 'S';
 
-    print_maze(maze, size);
+    if(debug){
+        print_maze(maze, size);
+    }
 
-    cout << "Exit reached!" << endl;
-    cout << "Starting to backtrack the exited particle" << endl;
+    printf("Exit reached by particle %d\n",exited_particle_index);
+    //cout << "Starting to backtrack the remaining particles" << endl;
 
-    backtrack_exited_particle(maze, maze_copy, initial_position, size, particles, exited_particle_path, exited_particle_index, debug);
+    //backtrack_exited_particle(maze, maze_copy, initial_position, size, particles, exited_particle_path, exited_particle_index, debug);
 
 
-    cout << "All particles have reached the exit!" << endl;
+    //cout << "All particles have reached the exit!" << endl;
 
     return maze;
 }
 
 
 // Sequentially solves the maze with multiple particles, initializing from a common start point
-vector<vector<char>> n_particles_sequential(vector<vector<char>> &maze, int &size, int &n_particles, int debug) {
+vector<vector<char>> n_particles_sequential(vector<vector<char>> &maze, int &size, int &n_particles, bool debug) {
     pair<int,int> initial_position = make_pair(0,1); // The start position is always (0,1)
 
     Particles particles(n_particles);

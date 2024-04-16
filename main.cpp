@@ -1,15 +1,15 @@
 #include <iostream>
 #include <stdlib.h>
 #include "./MazeGenerator/mazegenerator.cpp"
-#include "./MazeSolver/DFS/sequential.cpp"
-#include "./MazeSolver/DFS/parallel.cpp"
-#include "./MazeSolver/n_particles/parallel.cpp"
+#include "./MazeSolver/sequential.cpp"
+#include "./MazeSolver/parallel.cpp"
+#include <omp.h>
 using namespace std;
 
 int main(int argc, char *argv[]){
-    // Check if at least the size of the maze is provided
-    if(argc < 2){
-        printf("You must provide the size (odd number) of the maze and optionally the type of execution (s or p).\n");
+    // Check if arguments are correct
+    if(argc < 3){
+        printf("Usage: %s <size_of_maze> <no_of_particles>\n",argv[0]);
         exit(0);
     }
 
@@ -23,25 +23,22 @@ int main(int argc, char *argv[]){
 
     // Generate the maze
     vector<vector<char>> maze(size, vector<char>(size));
-    mazegenerator(maze, size, true);
+    mazegenerator(maze, size, false);
 
-    // Check if the execution type is provided
-    // char execution = (argc > 2) ? argv[2][0] : '\0';
+    vector<vector<char>> mazeForSequential = maze;
+    vector<vector<char>> mazeForParallel = maze;
+    double start;
+    double end;
+    int particles = atoi(argv[2]);
+    start = omp_get_wtime();  
+    n_particles_sequential(mazeForSequential, size, particles, false);
+    end = omp_get_wtime();
+    printf("Execution time for sequential code with %d particles is %f\n",particles,end-start);
 
-    // // Execute based on the provided type or default to both
-    // if (execution == 's') {
-    //     sequential(maze, size, true);
-    // } else if (execution == 'p') {
-    //     parallel(maze, size, true);
-    // } else {
-    //     // No valid execution type provided, execute both by default
-    //     vector<vector<char>> mazeForSequential = maze;
-    //     vector<vector<char>> mazeForParallel = maze;
-    //     sequential(mazeForSequential, size, true);
-    //     parallel(mazeForParallel, size, true);
-    // }
-    int particles = 100;
-    n_particles_parallel(maze,size,particles,true);
-    
+    start = omp_get_wtime();  
+    n_particles_parallel(mazeForParallel,size,particles,false);
+    end = omp_get_wtime();
+    printf("Execution time for parallel code with %d particles is %f\n",particles,end-start);
+
     return 0;
 }
