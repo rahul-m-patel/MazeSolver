@@ -197,6 +197,7 @@ vector<vector<char>> navigate_maze_randomly(vector<vector<char>> &maze, int &siz
         maze[coord.first][coord.second] = 'o';
     }
     maze[initial_position.first][initial_position.second] = 'S';
+    maze[exited_particle_path.back().first][exited_particle_path.back().second] = 'E';
 
     if(debug){
         print_maze(maze, size);
