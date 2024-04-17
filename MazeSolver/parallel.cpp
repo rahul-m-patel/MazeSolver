@@ -162,6 +162,7 @@ void p_solve_maze(vector<vector<char>> &maze, int &size, int &startRow, int &sta
         maze[it.first][it.second] = SOL;
     }
     maze[startRow][startCol] = START;
+    maze[exited_particle_path.back().first][exited_particle_path.back().second] = EXIT;
     printf("Exit reached by particle %d.\n",exited_particle);
 }
 

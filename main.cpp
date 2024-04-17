@@ -23,7 +23,7 @@ int main(int argc, char *argv[]){
 
     // Generate the maze
     vector<vector<char>> maze(size, vector<char>(size));
-    //pass the maze, size and debug flag
+    //pass the maze, size and debug flag, change flag to true to print generated matrix
     mazegenerator(maze, size, false);
     printf("Maze generated.\n\n");
     vector<vector<char>> mazeForSequential = maze;
@@ -32,12 +32,12 @@ int main(int argc, char *argv[]){
     double end;
     int particles = atoi(argv[2]);
     start = omp_get_wtime();  
-    n_particles_sequential(mazeForSequential, size, particles, false);
+    n_particles_sequential(mazeForSequential, size, particles, false); //change debug flag to true to print solved matrix
     end = omp_get_wtime();
     printf("Execution time for sequential code with %d particles is %f seconds\n\n",particles,end-start);
 
     start = omp_get_wtime();  
-    n_particles_parallel(mazeForParallel,size,particles,false);
+    n_particles_parallel(mazeForParallel,size,particles,false); //change debug flag to true to print solved matrix
     end = omp_get_wtime();
     printf("Execution time for parallel code with %d particles is %f seconds\n\n",particles,end-start);
 
