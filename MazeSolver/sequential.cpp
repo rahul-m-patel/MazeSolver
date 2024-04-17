@@ -103,12 +103,6 @@ void backtrack_exited_particle(vector<vector<char>> &maze, vector<vector<char>> 
     maze_copy.clear();
 
     while(n_exited_particles < n_particles) {
-        if(debug) {
-            // Reset maze to show step-by-step tracking
-            maze_copy = maze;
-            maze_copy[initial_position.first][initial_position.second] = 'S';
-        }
-
         // Retracing steps and aligning particle paths with the successful path
         for(int particle_index = 0; particle_index < n_particles_copy; particle_index++) {
             if(!exited_particles_map[particle_index]) {
@@ -143,23 +137,12 @@ void backtrack_exited_particle(vector<vector<char>> &maze, vector<vector<char>> 
                     particles.path[particle_index].pop_back();
                     particles.moves[particle_index] = move;
                     particles.position[particle_index] = position;
-
-                    if(debug) {
-                        maze_copy[position.first][position.second] = 'o';
-                    }
                 } else if (!exited_particles_map[particle_index]){
                     n_exited_particles += 1;
                     exited_particles_map[particle_index] = true;
                 }
-            } else {
-                if(debug) {
-                    maze_copy[particles.position[particle_index].first][particles.position[particle_index].second] = 'o';
-                }
-            }
+            } 
         }
-
-        if(debug)
-            print_maze(maze_copy, size); 
     }
 }
 
@@ -171,9 +154,6 @@ vector<vector<char>> navigate_maze_randomly(vector<vector<char>> &maze, int &siz
     std::random_device rd;
 
     while(!exit_reached) {
-        if(debug){
-            maze_copy = maze;
-        }
         for(int index = 0; index < particles.n_particles; index++) {
             vector<MOVES> moves = get_next_moves(maze, size, particles.position[index]);
             bool same_move_allowed = false;
@@ -202,10 +182,6 @@ vector<vector<char>> navigate_maze_randomly(vector<vector<char>> &maze, int &siz
             }
 
             pair<int,int> curr_pos = particles.position[index];
-            if(debug) {
-                maze_copy[curr_pos.first][curr_pos.second] = 'o';
-                maze_copy[initial_position.first][initial_position.second] = 'S';
-            }
 
             if(maze[curr_pos.first][curr_pos.second] == 'E') {
                 exited_particle_index = index;
@@ -213,18 +189,12 @@ vector<vector<char>> navigate_maze_randomly(vector<vector<char>> &maze, int &siz
                 break;
             }
         }
-
-        if(debug && !maze_copy.empty())
-            print_maze(maze_copy, size);
-
     }
 
     vector<pair<int,int>> exited_particle_path = particles.path[exited_particle_index];
 
     for(pair<int,int> coord : exited_particle_path) {
-        maze[
-
-coord.first][coord.second] = 'o';
+        maze[coord.first][coord.second] = 'o';
     }
     maze[initial_position.first][initial_position.second] = 'S';
 
