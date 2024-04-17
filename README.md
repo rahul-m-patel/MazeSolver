@@ -1,9 +1,21 @@
 # MazeSolver
-This project aims to solve a maze comparing sequential and parallel code. We use n particles to solve this problem, where each particle tries to find path from start to end independent of each other  
-  
-To execute this code:  
-Compile: We have tested our code on gcc-12.2  
-g++ main.cpp -o main -fopenmp  
-  
-Run the program:  
+
+## Project Overview
+MazeSolver is a project designed to explore maze solving algorithms by comparing sequential and parallel approaches. We utilize multiple particles, where each particle independently attempts to find a path from the start to the end of the maze.
+
+## Getting Started
+
+### Prerequisites
+- Ensure you have `gcc` installed on your system (we've tested this on gcc-12.2).
+
+### Compilation
+Compile the program using the following command:
+```bash
+g++ main.cpp -o main -fopenmp
+```
+
+### Execute the Program
+
+```bash
 ./main (size_of maze) (number_of_particles)
+```
